@@ -112,7 +112,7 @@
             <div class="field"><label>Rule Name</label><input class="control" id="rule-name-filter" placeholder="Enter rule name"></div>
             <div class="field"><label>Effective Period (Invoice Date)</label><select class="control"><option>All</option><option>2026</option><option>2025</option></select></div>
             <div class="field"><label>Order Branch</label><select class="control"><option>All</option><option>SA</option><option>VIC</option></select></div>
-            <div class="field"><label>Settlement Cycle</label><select class="control" id="cycle-filter"><option value="all">All</option><option>End of Effective Period</option><option>Monthly</option><option>Quarterly</option></select></div>
+            <div class="field"><label>Settlement Cycle</label><select class="control" id="cycle-filter"><option value="all">All</option><option>Monthly</option><option>Quarterly</option><option>Yearly</option></select></div>
             <div class="field"><label>Status</label><select class="control" id="rule-status-filter"><option value="all">All</option><option>Pending Approval</option><option>Rejected</option><option>Upcoming</option><option>Active</option><option>Completed</option><option>Cancelled</option></select></div>
             <button class="button primary" id="rule-search">Search</button>
           </div>
@@ -132,7 +132,7 @@
             <div class="form-grid">
               <div class="form-field"><label class="required">Rule Name</label><input class="control" id="form-rule-name" value="2027 Brand A Rebate"></div>
               <div class="form-field"><label class="required">Effective Period (Invoice Date)</label><input class="control" id="form-period" value="01/01/2027 - 31/12/2027"></div>
-              <div class="form-field"><label class="required">Settlement Cycle</label><select class="control" id="form-cycle"><option>End of Effective Period</option><option>Weekly</option><option>Monthly</option><option selected>Quarterly</option></select></div>
+              <div class="form-field"><label class="required">Settlement Cycle</label><select class="control" id="form-cycle"><option>Monthly</option><option selected>Quarterly</option><option>Yearly</option></select></div>
               <div class="form-field"><label class="required">Order Branch</label><select class="control" id="form-branch"><option>SA</option><option>VIC</option><option selected>SA, VIC</option></select></div>
             </div>
             <div class="group-builder"><div class="section-head" style="padding:0"><h2>Rebate Groups</h2><button class="button small" id="add-group" type="button">+ Rebate Group</button></div><div id="group-builder"></div></div>
@@ -194,9 +194,9 @@
       {name:'Rebate Group 2',conditions:[{field:'Item Code',operator:'is any of',value:'BNG-LR5-54HTH-440M'}],qualification:'Customer Cycle Qty',rateApplication:'Full cycle amount',tiers:[{from:'0',to:'99',rate:'2%'},{from:'100',to:'199',rate:'5%'},{from:'200',to:'No limit',rate:'8%'}]}
     ];
     const rules=[
-      {id:1,name:'2026 Brand A Rebate',period:'01/01/2026 - 31/12/2026',branch:'SA, VIC',cycle:'End of Effective Period',status:'Pending Approval',createdBy:'Mia',groups:structuredClone(baseGroups)},
+      {id:1,name:'2026 Brand A Rebate',period:'01/01/2026 - 31/12/2026',branch:'SA, VIC',cycle:'Yearly',status:'Pending Approval',createdBy:'Mia',groups:structuredClone(baseGroups)},
       {id:2,name:'2026 Brand A Rebate',period:'01/01/2026 - 31/12/2026',branch:'SA, VIC',cycle:'Monthly',status:'Rejected',createdBy:'Mia',rejectReason:'Tier 2 threshold overlaps Tier 1.',groups:structuredClone(baseGroups)},
-      {id:3,name:'2026 Brand A Rebate',period:'01/01/2026 - 31/12/2026',branch:'SA, VIC',cycle:'Weekly',status:'Upcoming',createdBy:'Mia',groups:structuredClone(baseGroups)},
+      {id:3,name:'2026 Brand A Rebate',period:'01/01/2026 - 31/12/2026',branch:'SA, VIC',cycle:'Yearly',status:'Upcoming',createdBy:'Mia',groups:structuredClone(baseGroups)},
       {id:4,name:'2026 Brand A Rebate',period:'01/01/2026 - 31/12/2026',branch:'SA, VIC',cycle:'Quarterly',status:'Active',createdBy:'Mia',groups:structuredClone(baseGroups)},
       {id:5,name:'2025 Brand B Rebate',period:'01/01/2025 - 31/12/2025',branch:'VIC',cycle:'Quarterly',status:'Completed',createdBy:'Mia',groups:structuredClone(baseGroups)},
       {id:6,name:'2025 Item Line Rebate',period:'01/07/2025 - 31/12/2025',branch:'SA',cycle:'Monthly',status:'Cancelled',createdBy:'Mia',groups:structuredClone(baseGroups)}
