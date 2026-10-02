@@ -298,55 +298,57 @@
     document.getElementById('close-drawer').onclick=closeDrawer;document.getElementById('drawer-mask').onclick=event=>{if(event.target.id==='drawer-mask')closeDrawer()};document.getElementById('credit-modal').onclick=event=>{if(event.target.id==='credit-modal')event.currentTarget.classList.remove('show')};document.getElementById('reason-modal').onclick=event=>{if(event.target.id==='reason-modal')event.currentTarget.classList.remove('show')};document.getElementById('approve-modal').onclick=event=>{if(event.target.id==='approve-modal')event.currentTarget.classList.remove('show')};
     renderRules();renderBuilder();setTimeout(()=>openRuleForm(),0);
   </script>
+<style>
+/* Screenshot-aligned shared SolarBrain navigation */
+html.universal-navigation .sidebar{width:90px;flex:none;padding:0;border-right:1px solid #e3e7eb;background:#fff;position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto}
+html.universal-navigation .sidebar .nav-item{min-height:61px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-bottom:1px solid #edf0f2;background:#fff;color:#444b53;text-align:center;line-height:13px;cursor:pointer;font-size:12px;font-weight:400}
+html.universal-navigation .sidebar .nav-item svg{width:22px;height:22px;fill:none;stroke:#7f8993;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+html.universal-navigation .sidebar .nav-item:hover{background:#f8fafb;color:#252b31}
+html.universal-navigation .sidebar .nav-item.active{background:#fbfcfd;color:#1f252b;font-weight:700}
+html.universal-navigation .sidebar .nav-item.active svg{stroke:#00b85a}
+html.universal-navigation .module-flyout,html.universal-navigation .universal-flyout{display:none!important}
+html.embed-mode .sidebar{display:none!important}
+</style>
 <script>
 (function(){
   document.documentElement.classList.add('universal-navigation');
   const sidebar=document.getElementById('sidebar');
   if(!sidebar)return;
+  const icons={
+    Home:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8"></path><path d="M5 10v10h14V10M9 20v-6h6v6"></path></svg>',
+    Customer:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 21c.5-5 2.8-7.5 7-7.5S18.5 16 19 21"></path></svg>',
+    Product:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 7 8-4 8 4-8 4-8-4Z"></path><path d="M4 7v10l8 4 8-4V7M12 11v10"></path></svg>',
+    Promotion:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M12 4v16"></path><circle cx="12" cy="12" r="9"></circle></svg>',
+    Sales:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V5M16 20v-8M22 20V3"></path></svg>',
+    Procurement:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h3l2 10h10l2-7H7"></path><circle cx="10" cy="19" r="1.5"></circle><circle cx="18" cy="19" r="1.5"></circle></svg>',
+    Warehouse:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9 12 3l9 6v12H3V9Z"></path><path d="M7 21v-8h10v8M7 16h10"></path></svg>',
+    Finance:'<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"></ellipse><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path></svg>',
+    Knowledge:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6c2 0 3 1 3 3v12c0-2-1-3-3-3H4V5Zm16 0h-6c-2 0-3 1-3 3v12c0-2 1-3 3-3h6V5Z"></path></svg>',
+    Application:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>'
+  };
   const primary=[
-    ['⌂','Home','/index.html'],
-    ['♙','Customer',null],
-    ['◇','Product',null],
-    ['◎','Promotion',null],
-    ['▣','Ecommerce',null],
-    ['▥','Sales','/document-requirements/index.html'],
-    ['🛒','Procurement',null],
-    ['▤','Warehouse<br>Logistics',null],
-    ['▤','Finance','/rebate-rules/index.html'],
-    ['✉','Knowledge',null],
-    ['▦','Application',null],
-    ['⚙','System',null]
+    ['Home','Home','/index.html'],['Customer','Customer',null],['Product','Product',null],['Promotion','Promotion',null],
+    ['Sales','Sales','/document-requirements/index.html'],['Procurement','Procurement',null],['Warehouse','Warehouse<br>Logistics',null],
+    ['Finance','Finance','/rebate-rules/index.html'],['Knowledge','Knowledge',null],['Application','Application',null]
   ];
-  const salesMenu={title:'Sales',groups:[{label:'Orders',items:[['Quotes',null],['Sales Orders','/document-requirements/order/index.html'],['Order Inventory',null],['Return Authorization',null]]},{label:'Report',items:[['Dashboard',null],['Sales Analysis Report',null],['Sales Order lifecycle',null]]},{label:'Sales Configuration',items:[['Document Requirements','/document-requirements/index.html']]}]};
-  const financeMenu={title:'Finance',groups:[{label:'Transactions',items:[['Invoices',null],['Credit Memo Requests','/credit-memo-requests/index.html'],['Rebate Rules','/rebate-rules/index.html']]}]};
-  sidebar.innerHTML='<nav class="universal-primary-nav" aria-label="Primary navigation">'+primary.map(item=>'<a class="universal-primary-item" data-module="'+item[1].replace(/<br>/g,' ')+'" data-route="'+(item[2]||'')+'" href="'+(item[2]||'#')+'"><span class="universal-primary-icon">'+item[0]+'</span><span>'+item[1]+'</span></a>').join('')+'</nav>';
   const path=location.pathname;
-  const salesPage=path.includes('/document-requirements/')||path.includes('/order-invoice-requirement-configuration/');
-  const activeModule=salesPage?'Sales':'Finance';
-  const menu=activeModule==='Sales'?salesMenu:financeMenu;
-  const flyout=document.createElement('aside');
-  flyout.className='universal-flyout';
-  flyout.setAttribute('aria-label',menu.title+' menu');
-  flyout.innerHTML='<div class="universal-flyout-title">'+menu.title+'</div><div class="universal-flyout-section">'+menu.groups.map(group=>'<div class="universal-flyout-group">'+group.label+'</div>'+group.items.map(item=>'<a class="universal-flyout-link" data-route="'+(item[1]||'')+'" href="'+(item[1]||'#')+'">'+item[0]+'</a>').join('')).join('')+'</div>';
-  sidebar.insertAdjacentElement('afterend',flyout);
-  const routeBase='/rebate-end-to-end-prototype/';
-  const localRoot=location.pathname.includes(routeBase)?location.pathname.slice(0,location.pathname.indexOf(routeBase)+routeBase.length):location.pathname.slice(0,location.pathname.lastIndexOf('/')+1);
+  const isSales=path.includes('/document-requirements/')||path.includes('/order-invoice-requirement-configuration/');
+  const isHome=/\/index\.html?$/.test(path) && !/\/(rebate-rules|rebate-achievement|credit-memo-requests|credit-memo-detail|document-requirements)\//.test(path);
+  const active=isHome?'Home':(isSales?'Sales':'Finance');
+  sidebar.innerHTML=primary.map(([key,label,route])=>`<a class="nav-item ${key===active?'active':''}" data-module="${key}" ${route?'data-route="'+route+'" href="#"':'href="#"'}>${icons[key]}<span>${label}</span></a>`).join('');
+  // Remove legacy contextual flyouts; the shared navigation is intentionally single-level.
+  document.querySelectorAll('.module-flyout,.universal-flyout').forEach(el=>el.remove());
+  const repoSegment='/rebate-end-to-end-prototype/';
+  const repoRoot=path.includes(repoSegment)?path.slice(0,path.indexOf(repoSegment)+repoSegment.length):'/';
   const embed=new URLSearchParams(location.search).get('embed')==='true';
-  const links=[...document.querySelectorAll('[data-route]')];
-  const current=location.pathname.replace(/index\.html$/,'/');
-  const matches=links.filter(link=>{const route=link.dataset.route;if(!route)return false;const target=route.replace(/index\.html$/,'/');return current===target||current.startsWith(target)&&target!=='/';}).sort((a,b)=>b.dataset.route.length-a.dataset.route.length);
-  links.forEach(link=>{
+  sidebar.querySelectorAll('[data-route]').forEach(link=>{
     const route=link.dataset.route;
-    if(route){
-      link.href=location.protocol==='file:'?'file://'+localRoot.replace(/\/$/,'')+route:route;
-      if(embed)link.href+=route.includes('?')?'&embed=true':'?embed=true';
-    }else{
-      link.removeAttribute('href');
-      link.addEventListener('click',event=>event.preventDefault());
-    }
-    if(matches[0]===link)link.classList.add('active');
+    link.href=location.protocol==='file:'?'file://'+repoRoot.replace(/\/$/,'')+route:repoRoot.replace(/\/$/,'')+route;
+    if(embed)link.href+=(link.href.includes('?')?'&':'?')+'embed=true';
   });
-  document.querySelectorAll('.universal-primary-item').forEach(link=>{if(link.dataset.module===activeModule)link.classList.add('active');});
+  sidebar.querySelectorAll('.nav-item').forEach(link=>link.addEventListener('click',event=>{
+    if(!link.dataset.route){event.preventDefault();if(typeof window.showToast==='function')window.showToast(`${link.dataset.module} is outside this prototype.`);}
+  }));
 })();
 </script>
 </body>
