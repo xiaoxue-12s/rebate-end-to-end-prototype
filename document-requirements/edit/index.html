@@ -27,16 +27,24 @@
     html.embed-mode .page{max-width:none;}
     html.embed-mode .drawer{width:min(1040px,100vw);}
     html.embed-mode .preview-modal{max-width:calc(100vw - 32px);}
-+    html.universal-navigation .sidebar{width:246px;padding:14px 12px;background:#fbfcfd;overflow-y:auto;}
+    html.universal-navigation .sidebar{width:90px;padding:0;background:#fff;overflow-y:auto;}
     html.universal-navigation .sidebar .nav-item{min-height:0;padding:0;border:0;background:transparent;font-weight:400;display:block;text-align:left;}
     html.universal-navigation .module-flyout{display:none!important;}
-    .universal-nav{display:flex;flex-direction:column;gap:3px;}
-    .universal-nav-brand{padding:8px 10px 18px;color:#00a35a;font-size:16px;font-weight:700;border-bottom:1px solid #e3e7eb;margin-bottom:10px;}
-    .universal-nav-section{padding:14px 10px 5px;color:#89939d;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
-    .universal-nav-link{display:block;width:100%;padding:9px 10px;border-radius:4px;color:#46515d;text-decoration:none;font-size:12px;line-height:16px;}
-    .universal-nav-link:hover{background:#eef4ff;color:#216fe5;}
-    .universal-nav-link.active{background:#e3efff;color:#216fe5;font-weight:700;}
-    html.embed-mode .universal-nav{display:none!important;}
+    .universal-primary-nav{display:flex;flex-direction:column;}
+    .universal-primary-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:72px;padding:8px 3px;border-bottom:1px solid #edf0f2;color:#424951;text-decoration:none;text-align:center;font-size:11px;line-height:14px;}
+    .universal-primary-item:hover{background:#f8fafb;color:#1677ff;}
+    .universal-primary-item.active{background:#fbfcfd;color:#1677ff;font-weight:700;box-shadow:inset 3px 0 0 #1677ff;}
+    .universal-primary-icon{display:grid;place-items:center;width:23px;height:23px;border:1px solid #8b959f;border-radius:5px;color:#68737d;font-size:14px;line-height:1;}
+    .universal-primary-item.active .universal-primary-icon{border-color:#00b85a;color:#00a35a;}
+    .universal-flyout{position:fixed;left:90px;top:56px;z-index:30;width:248px;height:calc(100vh - 56px);padding:18px 16px;border-right:1px solid #e3e7eb;background:#fff;box-shadow:8px 0 20px rgba(39,51,65,.08);overflow:auto;}
+    .universal-flyout-title{padding:0 8px 17px;border-bottom:1px solid #e3e7eb;color:#1677ff;font-size:15px;text-align:center;}
+    .universal-flyout-section{padding:17px 4px;}
+    .universal-flyout-group{display:flex;align-items:center;gap:8px;padding:0 8px 9px;font-size:13px;font-weight:700;}
+    .universal-flyout-group:before{content:"";width:16px;height:16px;border:1px solid #dfe3e7;border-radius:2px;background:#fff;}
+    .universal-flyout-link{display:block;width:100%;min-height:38px;padding:9px 28px;border:0;background:#fff;color:#252a30;text-decoration:none;font-size:12px;text-align:left;}
+    .universal-flyout-link:hover{background:#f5f8fb;color:#1677ff;}
+    .universal-flyout-link.active{background:#eef5ff;color:#1677ff;font-weight:700;box-shadow:inset 3px 0 0 #1677ff;}
+    html.embed-mode .universal-flyout{display:none!important;}
   </style>
 <script>
     (function(){
@@ -249,50 +257,55 @@
     function renderRuntime(){const c=activeConfig(),fieldTitle=escapeHtml(c.fieldTitle||c.name);const appliesTo=brand=>c.ruleEnabled===false||c.brands.includes(brand);const items=[{code:'SG-INV-5KW',brand:'Sungrow',desc:'SG5.0RS Residential Inverter',qty:1,price:'US$1,100.00',amount:'US$1,100.00',sn:'SG5RS26A00184',match:appliesTo('Sungrow')},{code:'BYD-HVM-22.1',brand:'BYD Battery-Box',desc:'Battery-Box Premium HVM 22.1',qty:1,price:'US$7,800.00',amount:'US$7,800.00',sn:'BYDHVM26B00891',match:appliesTo('BYD Battery-Box')}];const itemLevel=c.level==='Item Level';document.querySelectorAll('.item-req-col').forEach(e=>e.classList.toggle('hidden',!itemLevel));$('order-items').innerHTML=items.map((it,i)=>`<tr><td>${i+1}</td><td><button class="link">${it.code}</button></td><td>${it.brand}</td><td>${it.qty}</td><td>${it.price}</td><td>GST</td><td class="item-req-col ${itemLevel?'':'hidden'}">${it.match?`<div class="item-requirement"><strong>${fieldTitle}</strong>${runtimeRequirement(c,it,'order')}</div>`:'—'}</td><td><button class="link">Edit</button></td></tr>`).join('');$('invoice-items').innerHTML=items.map((it,i)=>`<tr><td>${i+1}</td><td><button class="link">${it.code}</button></td><td>${it.desc}</td><td>${it.qty}</td><td>${it.price}</td><td>${it.amount}</td><td class="item-req-col ${itemLevel?'':'hidden'}">${it.match&&c.invoice?`<div class="item-requirement"><strong>${fieldTitle}</strong>${runtimeRequirement(c,it,'invoice')}</div>`:'—'}</td></tr>`).join('');const matched=items.filter(x=>x.match);$('order-level-box').innerHTML=!itemLevel&&c.order&&matched.length?`<div class="doc-requirements"><div class="doc-req-head">Order Requirements</div><div class="doc-req-body"><strong>${fieldTitle}</strong>${runtimeDocumentRequirement(c,matched,'order')}</div></div>`:'';$('invoice-level-box').innerHTML=!itemLevel&&c.invoice&&matched.length?`<div class="doc-requirements" style="margin-top:0"><div class="doc-req-head">Invoice Requirements</div><div class="doc-req-body"><strong>${fieldTitle}</strong>${runtimeDocumentRequirement(c,matched,'invoice')}</div></div>`:''}
     renderList();updateFormState();setTimeout(()=>openForm(1),0);
   </script>
-+<script>
+<script>
 (function(){
   document.documentElement.classList.add('universal-navigation');
   const sidebar=document.getElementById('sidebar');
   if(!sidebar)return;
-  sidebar.innerHTML=`
-    <nav class="universal-nav" aria-label="Prototype navigation">
-      <div class="universal-nav-brand">SolarBrain Prototype</div>
-      <div class="universal-nav-section">Home</div>
-      <a class="universal-nav-link" data-route="/index.html">Prototype Overview</a>
-      <div class="universal-nav-section">Sales</div>
-      <a class="universal-nav-link" data-route="/document-requirements/index.html">Document Requirements</a>
-      <a class="universal-nav-link" data-route="/document-requirements/new/index.html">New Requirement</a>
-      <a class="universal-nav-link" data-route="/document-requirements/edit/index.html">Edit Requirement</a>
-      <a class="universal-nav-link" data-route="/document-requirements/detail/index.html">Requirement Details</a>
-      <a class="universal-nav-link" data-route="/document-requirements/order/index.html">Sales Order</a>
-      <a class="universal-nav-link" data-route="/document-requirements/order-pdf/index.html">Sales Order PDF</a>
-      <a class="universal-nav-link" data-route="/document-requirements/invoice/index.html">Invoice</a>
-      <a class="universal-nav-link" data-route="/document-requirements/invoice-pdf/index.html">Invoice PDF</a>
-      <div class="universal-nav-section">Finance</div>
-      <a class="universal-nav-link" data-route="/rebate-rules/index.html">Rebate Rules</a>
-      <a class="universal-nav-link" data-route="/rebate-rules/new/index.html">New Rebate Rule</a>
-      <a class="universal-nav-link" data-route="/rebate-rules/edit/index.html">Edit Rebate Rule</a>
-      <a class="universal-nav-link" data-route="/rebate-rules/detail/index.html">Rebate Rule Details</a>
-      <a class="universal-nav-link" data-route="/rebate-achievement/index.html">Rebate Achievement</a>
-      <a class="universal-nav-link" data-route="/credit-memo-requests/index.html">Credit Memo Requests</a>
-      <a class="universal-nav-link" data-route="/credit-memo-requests/detail/index.html">Credit Memo Request Details</a>
-      <a class="universal-nav-link" data-route="/credit-memo-detail/index.html">Credit Memo Detail</a>
-    </nav>`;
+  const primary=[
+    ['⌂','Home','/index.html'],
+    ['♙','Customer',null],
+    ['◇','Product',null],
+    ['◎','Promotion',null],
+    ['▣','Ecommerce',null],
+    ['▥','Sales','/document-requirements/index.html'],
+    ['🛒','Procurement',null],
+    ['▤','Warehouse<br>Logistics',null],
+    ['▤','Finance','/rebate-rules/index.html'],
+    ['✉','Knowledge',null],
+    ['▦','Application',null],
+    ['⚙','System',null]
+  ];
+  const salesMenu={title:'Sales',groups:[{label:'Orders',items:[['Quotes',null],['Sales Orders','/document-requirements/order/index.html'],['Order Inventory',null],['Return Authorization',null]]},{label:'Report',items:[['Dashboard',null],['Sales Analysis Report',null],['Sales Order lifecycle',null]]},{label:'Sales Configuration',items:[['Document Requirements','/document-requirements/index.html']]}]};
+  const financeMenu={title:'Finance',groups:[{label:'Transactions',items:[['Invoices',null],['Credit Memo Requests','/credit-memo-requests/index.html'],['Rebate Rules','/rebate-rules/index.html']]}]};
+  sidebar.innerHTML='<nav class="universal-primary-nav" aria-label="Primary navigation">'+primary.map(item=>'<a class="universal-primary-item" data-module="'+item[1].replace(/<br>/g,' ')+'" data-route="'+(item[2]||'')+'" href="'+(item[2]||'#')+'"><span class="universal-primary-icon">'+item[0]+'</span><span>'+item[1]+'</span></a>').join('')+'</nav>';
+  const path=location.pathname;
+  const salesPage=path.includes('/document-requirements/')||path.includes('/order-invoice-requirement-configuration/');
+  const activeModule=salesPage?'Sales':'Finance';
+  const menu=activeModule==='Sales'?salesMenu:financeMenu;
+  const flyout=document.createElement('aside');
+  flyout.className='universal-flyout';
+  flyout.setAttribute('aria-label',menu.title+' menu');
+  flyout.innerHTML='<div class="universal-flyout-title">'+menu.title+'</div><div class="universal-flyout-section">'+menu.groups.map(group=>'<div class="universal-flyout-group">'+group.label+'</div>'+group.items.map(item=>'<a class="universal-flyout-link" data-route="'+(item[1]||'')+'" href="'+(item[1]||'#')+'">'+item[0]+'</a>').join('')).join('')+'</div>';
+  sidebar.insertAdjacentElement('afterend',flyout);
   const routeBase='/rebate-end-to-end-prototype/';
   const localRoot=location.pathname.includes(routeBase)?location.pathname.slice(0,location.pathname.indexOf(routeBase)+routeBase.length):location.pathname.slice(0,location.pathname.lastIndexOf('/')+1);
   const embed=new URLSearchParams(location.search).get('embed')==='true';
   const links=[...document.querySelectorAll('[data-route]')];
   const current=location.pathname.replace(/index\.html$/,'/');
-  const matches=links.filter(link=>{
-    const target=link.dataset.route.replace(/index\.html$/,'/');
-    return current===target||current.startsWith(target)&&target!=='/';
-  }).sort((a,b)=>b.dataset.route.length-a.dataset.route.length);
+  const matches=links.filter(link=>{const route=link.dataset.route;if(!route)return false;const target=route.replace(/index\.html$/,'/');return current===target||current.startsWith(target)&&target!=='/';}).sort((a,b)=>b.dataset.route.length-a.dataset.route.length);
   links.forEach(link=>{
     const route=link.dataset.route;
-    link.href=location.protocol==='file:'?'file://'+localRoot.replace(/\/$/,'')+route:route;
-    if(embed)link.href+=route.includes('?')?'&embed=true':'?embed=true';
+    if(route){
+      link.href=location.protocol==='file:'?'file://'+localRoot.replace(/\/$/,'')+route:route;
+      if(embed)link.href+=route.includes('?')?'&embed=true':'?embed=true';
+    }else{
+      link.removeAttribute('href');
+      link.addEventListener('click',event=>event.preventDefault());
+    }
     if(matches[0]===link)link.classList.add('active');
   });
+  document.querySelectorAll('.universal-primary-item').forEach(link=>{if(link.dataset.module===activeModule)link.classList.add('active');});
 })();
 </script>
 </body>
