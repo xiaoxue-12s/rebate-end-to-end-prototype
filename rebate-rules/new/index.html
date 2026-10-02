@@ -90,6 +90,16 @@
     html.embed-mode .page{max-width:none;}
     html.embed-mode .drawer{width:min(1040px,100vw);}
     html.embed-mode .preview-modal{max-width:calc(100vw - 32px);}
++    html.universal-navigation .sidebar{width:246px;padding:14px 12px;background:#fbfcfd;overflow-y:auto;}
+    html.universal-navigation .sidebar .nav-item{min-height:0;padding:0;border:0;background:transparent;font-weight:400;display:block;text-align:left;}
+    html.universal-navigation .module-flyout{display:none!important;}
+    .universal-nav{display:flex;flex-direction:column;gap:3px;}
+    .universal-nav-brand{padding:8px 10px 18px;color:#00a35a;font-size:16px;font-weight:700;border-bottom:1px solid #e3e7eb;margin-bottom:10px;}
+    .universal-nav-section{padding:14px 10px 5px;color:#89939d;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+    .universal-nav-link{display:block;width:100%;padding:9px 10px;border-radius:4px;color:#46515d;text-decoration:none;font-size:12px;line-height:16px;}
+    .universal-nav-link:hover{background:#eef4ff;color:#216fe5;}
+    .universal-nav-link.active{background:#e3efff;color:#216fe5;font-weight:700;}
+    html.embed-mode .universal-nav{display:none!important;}
   </style>
 <script>
     (function(){
@@ -280,5 +290,51 @@
     document.getElementById('close-drawer').onclick=closeDrawer;document.getElementById('drawer-mask').onclick=event=>{if(event.target.id==='drawer-mask')closeDrawer()};document.getElementById('credit-modal').onclick=event=>{if(event.target.id==='credit-modal')event.currentTarget.classList.remove('show')};document.getElementById('reason-modal').onclick=event=>{if(event.target.id==='reason-modal')event.currentTarget.classList.remove('show')};document.getElementById('approve-modal').onclick=event=>{if(event.target.id==='approve-modal')event.currentTarget.classList.remove('show')};
     renderRules();renderBuilder();setTimeout(()=>openRuleForm(),0);
   </script>
++<script>
+(function(){
+  document.documentElement.classList.add('universal-navigation');
+  const sidebar=document.getElementById('sidebar');
+  if(!sidebar)return;
+  sidebar.innerHTML=`
+    <nav class="universal-nav" aria-label="Prototype navigation">
+      <div class="universal-nav-brand">SolarBrain Prototype</div>
+      <div class="universal-nav-section">Home</div>
+      <a class="universal-nav-link" data-route="/index.html">Prototype Overview</a>
+      <div class="universal-nav-section">Sales</div>
+      <a class="universal-nav-link" data-route="/document-requirements/index.html">Document Requirements</a>
+      <a class="universal-nav-link" data-route="/document-requirements/new/index.html">New Requirement</a>
+      <a class="universal-nav-link" data-route="/document-requirements/edit/index.html">Edit Requirement</a>
+      <a class="universal-nav-link" data-route="/document-requirements/detail/index.html">Requirement Details</a>
+      <a class="universal-nav-link" data-route="/document-requirements/order/index.html">Sales Order</a>
+      <a class="universal-nav-link" data-route="/document-requirements/order-pdf/index.html">Sales Order PDF</a>
+      <a class="universal-nav-link" data-route="/document-requirements/invoice/index.html">Invoice</a>
+      <a class="universal-nav-link" data-route="/document-requirements/invoice-pdf/index.html">Invoice PDF</a>
+      <div class="universal-nav-section">Finance</div>
+      <a class="universal-nav-link" data-route="/rebate-rules/index.html">Rebate Rules</a>
+      <a class="universal-nav-link" data-route="/rebate-rules/new/index.html">New Rebate Rule</a>
+      <a class="universal-nav-link" data-route="/rebate-rules/edit/index.html">Edit Rebate Rule</a>
+      <a class="universal-nav-link" data-route="/rebate-rules/detail/index.html">Rebate Rule Details</a>
+      <a class="universal-nav-link" data-route="/rebate-achievement/index.html">Rebate Achievement</a>
+      <a class="universal-nav-link" data-route="/credit-memo-requests/index.html">Credit Memo Requests</a>
+      <a class="universal-nav-link" data-route="/credit-memo-requests/detail/index.html">Credit Memo Request Details</a>
+      <a class="universal-nav-link" data-route="/credit-memo-detail/index.html">Credit Memo Detail</a>
+    </nav>`;
+  const routeBase='/rebate-end-to-end-prototype/';
+  const localRoot=location.pathname.includes(routeBase)?location.pathname.slice(0,location.pathname.indexOf(routeBase)+routeBase.length):location.pathname.slice(0,location.pathname.lastIndexOf('/')+1);
+  const embed=new URLSearchParams(location.search).get('embed')==='true';
+  const links=[...document.querySelectorAll('[data-route]')];
+  const current=location.pathname.replace(/index\.html$/,'/');
+  const matches=links.filter(link=>{
+    const target=link.dataset.route.replace(/index\.html$/,'/');
+    return current===target||current.startsWith(target)&&target!=='/';
+  }).sort((a,b)=>b.dataset.route.length-a.dataset.route.length);
+  links.forEach(link=>{
+    const route=link.dataset.route;
+    link.href=location.protocol==='file:'?'file://'+localRoot.replace(/\/$/,'')+route:route;
+    if(embed)link.href+=route.includes('?')?'&embed=true':'?embed=true';
+    if(matches[0]===link)link.classList.add('active');
+  });
+})();
+</script>
 </body>
 </html>
