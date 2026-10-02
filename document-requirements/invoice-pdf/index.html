@@ -320,7 +320,8 @@ html.embed-mode .sidebar,html.embed-mode .universal-flyout{display:none!importan
   const embed=new URLSearchParams(location.search).get('embed')==='true';
   const toHref=(route)=>{
     if(!route)return '#';
-    const href=location.protocol==='file:'?'file://'+repoRoot.replace(/\/$/,'')+route:repoRoot.replace(/\/$/,'')+route;
+    const hostedRoot='http://10.10.70.242:8080/OSW-Demo-Mia';
+    const href=location.protocol==='file:'?'file://'+repoRoot.replace(/\/$/,'')+route:hostedRoot+route;
     return embed?href+(href.includes('?')?'&':'?')+'embed=true':href;
   };
   const current=location.pathname.replace(/index\.html$/,'/');
