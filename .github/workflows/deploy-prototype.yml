@@ -1,0 +1,35 @@
+name: Deploy Prototype
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy Prototype
+        shell: powershell
+        run: |
+          $destination = "C:\Prototype\OSW-Demo-Mia"
+
+          if (!(Test-Path $destination)) {
+            New-Item -ItemType Directory -Path $destination -Force
+          }
+
+          robocopy "${{ github.workspace }}" $destination /MIR /XD ".git" ".github"
+
+          if ($LASTEXITCODE -le 7) {
+            Write-Host "Deployment completed successfully."
+            exit 0
+          } else {
+            Write-Error "Deployment failed. Robocopy exit code: $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
