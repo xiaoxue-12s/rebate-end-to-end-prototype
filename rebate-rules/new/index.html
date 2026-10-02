@@ -82,7 +82,20 @@
     .toast{position:fixed;left:50%;bottom:28px;z-index:100;padding:10px 16px;border-radius:3px;background:#252c34;color:#fff;opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:.18s}.toast.show{opacity:1;transform:translate(-50%,0)}
     .hidden{display:none!important}.highlight-row{animation:highlight 2.2s ease}@keyframes highlight{0%,60%{background:#fff4cf}100%{background:transparent}}
     @media(max-width:1280px){.workspace{padding-left:24px;padding-right:24px}.filter-grid{grid-template-columns:repeat(3,1fr)}.filter-grid.cmr{grid-template-columns:repeat(3,1fr)}.form-grid{grid-template-columns:repeat(2,1fr)}}
+    html.embed-mode,html.embed-mode body{height:100%;min-height:100%;}
+    html.embed-mode body{min-width:0;overflow-x:auto;}
+    html.embed-mode .topbar,html.embed-mode .sidebar,html.embed-mode .module-flyout{display:none!important;}
+    html.embed-mode .shell{display:block;min-height:100vh;}
+    html.embed-mode .workspace{width:100%;min-height:100vh;padding:24px 28px 40px;}
+    html.embed-mode .page{max-width:none;}
+    html.embed-mode .drawer{width:min(1040px,100vw);}
+    html.embed-mode .preview-modal{max-width:calc(100vw - 32px);}
   </style>
+<script>
+    (function(){
+      if(new URLSearchParams(window.location.search).get('embed')==='true'){document.documentElement.classList.add('embed-mode');}
+    })();
+  </script>
 </head>
 <body>
   <header class="topbar">

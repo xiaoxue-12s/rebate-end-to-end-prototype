@@ -28,3 +28,14 @@
 - `/credit-memo-detail/`：Credit Memo Detail
 
 页面内部仍保留原型中的按钮交互；独立路径用于直接打开指定页面，避免必须从一个 SPA 页面逐层点击进入。
+
+## Axure Embed 模式
+
+任意页面 URL 增加 `?embed=true` 后，会隐藏 SolarBrain 顶部栏、侧边栏和全局导航，主内容自动扩展到可用视口宽高。例如：
+
+```text
+/rebate-rules/?embed=true
+/document-requirements/detail/?embed=true
+```
+
+不带 `embed=true` 时，页面保持原有布局。

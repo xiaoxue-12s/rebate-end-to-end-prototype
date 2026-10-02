@@ -19,7 +19,20 @@
     .form-title-row{position:relative;margin-bottom:8px}.form-title-row .center-form-title{margin:0}.form-status-control{position:absolute;right:0;top:50%;display:flex;align-items:center;gap:9px;transform:translateY(-50%);color:#59636d}.details-content-block>.segmented button.active{background:#1677ff;color:#fff}
     .locked-note{margin:0 0 12px;padding:8px 10px;border-left:3px solid #aeb8c2;background:#f1f3f5;color:#69737d;font-size:10px;line-height:15px}
     @media(max-width:1280px){.workspace{padding-left:24px;padding-right:24px}.form-layout{grid-template-columns:minmax(0,1fr) 300px}.filters{gap:10px}.field{min-width:140px}}
+    html.embed-mode,html.embed-mode body{height:100%;min-height:100%;}
+    html.embed-mode body{min-width:0;overflow-x:auto;}
+    html.embed-mode .topbar,html.embed-mode .sidebar,html.embed-mode .module-flyout{display:none!important;}
+    html.embed-mode .shell{display:block;min-height:100vh;}
+    html.embed-mode .workspace{width:100%;min-height:100vh;padding:24px 28px 40px;}
+    html.embed-mode .page{max-width:none;}
+    html.embed-mode .drawer{width:min(1040px,100vw);}
+    html.embed-mode .preview-modal{max-width:calc(100vw - 32px);}
   </style>
+<script>
+    (function(){
+      if(new URLSearchParams(window.location.search).get('embed')==='true'){document.documentElement.classList.add('embed-mode');}
+    })();
+  </script>
 </head>
 <body>
   <header class="topbar">
