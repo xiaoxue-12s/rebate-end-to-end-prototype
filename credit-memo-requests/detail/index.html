@@ -301,13 +301,18 @@
 <style>
 /* Screenshot-aligned shared SolarBrain navigation */
 html.universal-navigation .sidebar{width:90px;flex:none;padding:0;border-right:1px solid #e3e7eb;background:#fff;position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto}
-html.universal-navigation .sidebar .nav-item{min-height:61px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-bottom:1px solid #edf0f2;background:#fff;color:#444b53;text-align:center;line-height:13px;cursor:pointer;font-size:12px;font-weight:400}
+html.universal-navigation .sidebar .nav-item{min-height:61px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-bottom:1px solid #edf0f2;background:#fff;color:#444b53;text-align:center;line-height:13px;cursor:pointer;font-size:12px;font-weight:400;text-decoration:none}
 html.universal-navigation .sidebar .nav-item svg{width:22px;height:22px;fill:none;stroke:#7f8993;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 html.universal-navigation .sidebar .nav-item:hover{background:#f8fafb;color:#252b31}
 html.universal-navigation .sidebar .nav-item.active{background:#fbfcfd;color:#1f252b;font-weight:700}
 html.universal-navigation .sidebar .nav-item.active svg{stroke:#00b85a}
-html.universal-navigation .module-flyout,html.universal-navigation .universal-flyout{display:none!important}
-html.embed-mode .sidebar{display:none!important}
+html.universal-navigation .module-flyout{display:none!important}
+html.embed-mode .sidebar,html.embed-mode .universal-flyout{display:none!important}
+.universal-flyout{position:fixed;left:90px;top:56px;z-index:50;width:248px;min-height:calc(100vh - 56px);padding:18px 16px;border-right:1px solid #e3e7eb;background:#fff;box-shadow:8px 0 20px rgba(39,51,65,.08);overflow:auto}
+.universal-flyout[hidden]{display:none!important}
+.universal-flyout-title{padding:0 8px 17px;border-bottom:1px solid #e3e7eb;color:#1677ff;font-size:15px;text-align:center}
+.universal-flyout-section{padding:17px 4px}.universal-flyout-group{display:flex;align-items:center;gap:8px;padding:0 8px 9px;font-size:13px;font-weight:700}.universal-flyout-group:before{content:"";width:16px;height:16px;border:1px solid #dfe3e7;border-radius:2px;background:#fff}
+.universal-flyout-link{display:block;width:100%;min-height:38px;padding:9px 28px;border:0;background:#fff;color:#252a30;text-decoration:none;font-size:12px;text-align:left}.universal-flyout-link:hover{background:#f5f8fb;color:#1677ff}.universal-flyout-link.active{background:#eef5ff;color:#1677ff;font-weight:700;box-shadow:inset 3px 0 0 #1677ff}
 </style>
 <script>
 (function(){
@@ -328,27 +333,53 @@ html.embed-mode .sidebar{display:none!important}
   };
   const primary=[
     ['Home','Home','/index.html'],['Customer','Customer',null],['Product','Product',null],['Promotion','Promotion',null],
-    ['Sales','Sales','/document-requirements/index.html'],['Procurement','Procurement',null],['Warehouse','Warehouse<br>Logistics',null],
-    ['Finance','Finance','/rebate-rules/index.html'],['Knowledge','Knowledge',null],['Application','Application',null]
+    ['Sales','Sales',null],['Procurement','Procurement',null],['Warehouse','Warehouse<br>Logistics',null],
+    ['Finance','Finance',null],['Knowledge','Knowledge',null],['Application','Application',null]
   ];
+  const menus={
+    Sales:{title:'Sales',groups:[
+      {label:'Orders',items:[['Quotes',null],['Sales Orders','/document-requirements/order/index.html'],['Order Inventory',null],['Return Authorization',null]]},
+      {label:'Report',items:[['Dashboard',null],['Sales Analysis Report',null],['Sales Order lifecycle',null]]},
+      {label:'Sales Configuration',items:[['Document Requirements','/document-requirements/index.html']]}
+    ]},
+    Finance:{title:'Finance',groups:[
+      {label:'Transactions',items:[['Invoices','/document-requirements/invoice/index.html'],['Credit Memo Requests','/credit-memo-requests/index.html'],['Rebate Rules','/rebate-rules/index.html']]}
+    ]}
+  };
   const path=location.pathname;
   const isSales=path.includes('/document-requirements/')||path.includes('/order-invoice-requirement-configuration/');
   const isHome=/\/index\.html?$/.test(path) && !/\/(rebate-rules|rebate-achievement|credit-memo-requests|credit-memo-detail|document-requirements)\//.test(path);
   const active=isHome?'Home':(isSales?'Sales':'Finance');
-  sidebar.innerHTML=primary.map(([key,label,route])=>`<a class="nav-item ${key===active?'active':''}" data-module="${key}" ${route?'data-route="'+route+'" href="#"':'href="#"'}>${icons[key]}<span>${label}</span></a>`).join('');
-  // Remove legacy contextual flyouts; the shared navigation is intentionally single-level.
+  sidebar.innerHTML=primary.map(([key,label])=>`<a class="nav-item ${key===active?'active':''}" data-module="${key}" href="#">${icons[key]}<span>${label}</span></a>`).join('');
   document.querySelectorAll('.module-flyout,.universal-flyout').forEach(el=>el.remove());
+  const flyout=document.createElement('aside');
+  flyout.className='universal-flyout';
+  flyout.hidden=true;
+  document.body.appendChild(flyout);
   const repoSegment='/rebate-end-to-end-prototype/';
   const repoRoot=path.includes(repoSegment)?path.slice(0,path.indexOf(repoSegment)+repoSegment.length):'/';
   const embed=new URLSearchParams(location.search).get('embed')==='true';
-  sidebar.querySelectorAll('[data-route]').forEach(link=>{
-    const route=link.dataset.route;
-    link.href=location.protocol==='file:'?'file://'+repoRoot.replace(/\/$/,'')+route:repoRoot.replace(/\/$/,'')+route;
-    if(embed)link.href+=(link.href.includes('?')?'&':'?')+'embed=true';
-  });
+  const toHref=(route)=>{
+    if(!route)return '#';
+    const href=location.protocol==='file:'?'file://'+repoRoot.replace(/\/$/,'')+route:repoRoot.replace(/\/$/,'')+route;
+    return embed?href+(href.includes('?')?'&':'?')+'embed=true':href;
+  };
+  const current=location.pathname.replace(/index\.html$/,'/');
+  const isCurrent=(route)=>{if(!route)return false;const target=route.replace(/index\.html$/,'/');return current===target||(target!=='/'&&current.startsWith(target));};
+  function renderFlyout(module){
+    const menu=menus[module];
+    if(!menu){flyout.hidden=true;return;}
+    flyout.innerHTML='<div class="universal-flyout-title">'+menu.title+'</div><div class="universal-flyout-section">'+menu.groups.map(group=>'<div class="universal-flyout-group">'+group.label+'</div>'+group.items.map(item=>'<a class="universal-flyout-link '+(isCurrent(item[1])?'active':'')+'" href="'+toHref(item[1])+'">'+item[0]+'</a>').join('')).join('')+'</div>';
+    flyout.hidden=false;
+  }
+  function closeFlyout(){flyout.hidden=true;}
   sidebar.querySelectorAll('.nav-item').forEach(link=>link.addEventListener('click',event=>{
-    if(!link.dataset.route){event.preventDefault();if(typeof window.showToast==='function')window.showToast(`${link.dataset.module} is outside this prototype.`);}
+    const module=link.dataset.module;
+    if(menus[module]){event.preventDefault();renderFlyout(module);return;}
+    if(module==='Home'){link.href=toHref('/index.html');return;}
+    event.preventDefault();if(typeof window.showToast==='function')window.showToast(`${module} is outside this prototype.`);
   }));
+  document.addEventListener('click',event=>{if(!event.target.closest('.sidebar')&&!event.target.closest('.universal-flyout'))closeFlyout();});
 })();
 </script>
 </body>
